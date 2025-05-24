@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-import requests # Zum Abrufen von Daten von der API
+import requests
 
 app = Flask(__name__)
 
