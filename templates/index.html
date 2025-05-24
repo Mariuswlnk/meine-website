@@ -144,23 +144,7 @@
         <p>{{ result }}</p>
         {% endif %}
 
-        <div class="news-section">
-            <h2>Wichtige Nachrichten aus der Welt</h2>
-            {% if news_articles %}
-                {% for article in news_articles %}
-                    <div class="news-article">
-                        {% if article.urlToImage %}
-                            <img src="{{ article.urlToImage }}" alt="Artikelbild" class="news-thumbnail">
-                        {% endif %}
-                        <h3><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h3>
-                        <p>{{ article.description }}</p>
-                        <p><small>Quelle: {{ article.source.name }}</small></p>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p>Nachrichten konnten nicht geladen werden oder sind derzeit nicht verfügbar.</p>
-            {% endif %}
-        </div>
+
         <div class="webcam-container">
             <h2>Live Webcam: Kulturpalast, Warschau</h2>
             <p>Aktuelle Ansicht des beeindruckenden Kulturpalastes und der Umgebung in Warschau, Polen.</p>
