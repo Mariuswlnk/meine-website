@@ -4,7 +4,60 @@
     <title>Meine erste Flask-Seite</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        /* Zusätzliches CSS für die Webcam-Einbettung */
+        /* Zusätzliches CSS für die Nachrichten */
+        .news-section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .news-section h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .news-article {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+        }
+        .news-article:last-child {
+            border-bottom: none; /* Kein Trenner nach dem letzten Artikel */
+        }
+        .news-article h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+        .news-article p {
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+        }
+        .news-article a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .news-article a:hover {
+            text-decoration: underline;
+        }
+        .news-thumbnail {
+            float: right;
+            margin-left: 15px;
+            max-width: 120px;
+            height: auto;
+            border-radius: 4px;
+        }
+        .news-article::after { /* Clearfix für Float */
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Zusätzliches CSS für die Webcam-Einbettung (wie zuvor) */
         .webcam-container {
             max-width: 800px; /* Oder eine andere Breite, die zu deinem Layout passt */
             margin: 20px auto; /* Etwas Abstand nach oben und unten, zentriert */
@@ -91,6 +144,23 @@
         <p>{{ result }}</p>
         {% endif %}
 
+        <div class="news-section">
+            <h2>Wichtige Nachrichten aus der Welt</h2>
+            {% if news_articles %}
+                {% for article in news_articles %}
+                    <div class="news-article">
+                        {% if article.urlToImage %}
+                            <img src="{{ article.urlToImage }}" alt="Artikelbild" class="news-thumbnail">
+                        {% endif %}
+                        <h3><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h3>
+                        <p>{{ article.description }}</p>
+                        <p><small>Quelle: {{ article.source.name }}</small></p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Nachrichten konnten nicht geladen werden oder sind derzeit nicht verfügbar.</p>
+            {% endif %}
+        </div>
         <div class="webcam-container">
             <h2>Live Webcam: Kulturpalast, Warschau</h2>
             <p>Aktuelle Ansicht des beeindruckenden Kulturpalastes und der Umgebung in Warschau, Polen.</p>
@@ -104,7 +174,6 @@
             </iframe>
             <div class="webcam-source">Quelle: <a href="https://www.earthtv.com/de/webcam/warschau-kulturpalast" target="_blank">earthTV.com</a></div>
         </div>
-        </main>
+    </main>
 </body>
 </html>
-
