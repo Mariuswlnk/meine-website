@@ -1,9 +1,27 @@
 <!doctype html>
 <html>
 <head>
-    <title>Meine Website</title>
+    <title>Meine erste Flask-Seite</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Hallo, das ist meine Website mit Python! Test</h1>
+    <header>
+        <h1>Willkommen auf meiner Website!</h1>
+    </header>
+    <main>
+        <p>Diese Seite wird von Flask gerendert.</p>
+
+        <form method="post" action="/analyse">
+            <label for="text">Text zur Analyse:</label><br>
+            <textarea id="text" name="text" rows="4" cols="50" placeholder="Hier deinen Text eingeben..."></textarea><br><br>
+            <button type="submit">Analysieren</button>
+        </form>
+
+        {% if result %}
+        <h2>Analyse Ergebnis:</h2>
+        <p>{{ result }}</p>
+        {% endif %}
+    </main>
 </body>
 </html>
+
