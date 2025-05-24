@@ -27,6 +27,7 @@ def home():
         apod_data = response.json()
         print(f"DEBUG: APOD-Antwort von NASA API: {apod_data}") # Zum Debuggen
 
+
     except requests.exceptions.RequestException as e:
         print(f"Fehler bei der HTTP-Anfrage an die NASA APOD API: {e}")
     except Exception as e:

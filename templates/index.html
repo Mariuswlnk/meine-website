@@ -4,7 +4,7 @@
     <title>Meine erste Flask-Seite</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        /* Zusätzliches CSS für NASA APOD */
+        /* Zusätzliches CSS für NASA APOD (wie zuvor) */
         .apod-section {
             max-width: 800px;
             margin: 20px auto;
@@ -39,7 +39,7 @@
             margin-top: 10px;
         }
 
-        /* Zusätzliches CSS für die Webcam-Einbettung (wie zuvor) */
+        /* Zusätzliches CSS für die Webcam-Einbettung */
         .webcam-container {
             max-width: 800px; /* Oder eine andere Breite, die zu deinem Layout passt */
             margin: 20px auto; /* Etwas Abstand nach oben und unten, zentriert */
@@ -47,7 +47,31 @@
             box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
             background-color: #fff;
             padding: 10px;
+            /* margin-bottom: 20px; wird jetzt von JavaScript gesteuert, wenn sie ausgeblendet sind */
         }
+        /* Buttons für Webcam-Auswahl */
+        .webcam-controls {
+            max-width: 800px;
+            margin: 20px auto 10px auto; /* Abstand über den Webcams */
+            text-align: center;
+        }
+        .webcam-controls button {
+            background-color: #28a745; /* Grün für Webcam-Buttons */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        .webcam-controls button:hover {
+            background-color: #218838;
+        }
+        .webcam-controls button.active {
+            background-color: #0056b3; /* Dunklerer Blau für aktive Webcam */
+        }
+
+
         .webcam-container h2 {
             margin-top: 0;
             color: #333;
@@ -150,7 +174,12 @@
                 <p>Astronomy Picture of the Day konnte nicht geladen werden.</p>
             {% endif %}
         </div>
-        <div class="webcam-container">
+        <div class="webcam-controls">
+            <button onclick="showWebcam('webcam1')" id="btn-webcam1" class="active">Kulturpalast, Warschau</button>
+            <button onclick="showWebcam('webcam2')" id="btn-webcam2">Leba, Polen</button>
+        </div>
+
+        <div class="webcam-container" id="webcam1-container">
             <h2>Live Webcam: Kulturpalast, Warschau</h2>
             <p>Aktuelle Ansicht des beeindruckenden Kulturpalastes und der Umgebung in Warschau, Polen.</p>
 
@@ -163,6 +192,46 @@
             </iframe>
             <div class="webcam-source">Quelle: <a href="https://www.earthtv.com/de/webcam/warschau-kulturpalast" target="_blank">earthTV.com</a></div>
         </div>
+        <div class="webcam-container" id="webcam2-container" style="display: none;">
+            <h2>Live Webcam: Leba, Polen</h2>
+            <p>Aktuelle Ansicht von Leba in Polen, bereitgestellt von Nadmorski24.pl.</p>
+
+            <iframe src="https://player.nadmorski24.pl/_camera?id=20&ad=true"
+                    onload="resizeIframe(this)"
+                    allow="autoplay; fullscreen"
+                    scrolling="no"
+                    id="camera"
+                    style="width: 100%; height: 450px;"
+                    allowfullscreen
+                    frameborder="0">
+            </iframe>
+            <div class="webcam-source">Quelle: <a href="https://nadmorski24.pl/kamery" target="_blank">nadmorski24.pl</a></div>
+        </div>
         </main>
+
+    <script>
+        function showWebcam(webcamId) {
+            const webcam1 = document.getElementById('webcam1-container');
+            const webcam2 = document.getElementById('webcam2-container');
+            const btn1 = document.getElementById('btn-webcam1');
+            const btn2 = document.getElementById('btn-webcam2');
+
+            if (webcamId === 'webcam1') {
+                webcam1.style.display = 'block'; // Zeigt die erste Webcam an
+                webcam2.style.display = 'none';  // Blendet die zweite Webcam aus
+                btn1.classList.add('active');    // Markiert den ersten Button als aktiv
+                btn2.classList.remove('active'); // Entfernt Aktiv-Markierung vom zweiten Button
+            } else {
+                webcam1.style.display = 'none';  // Blendet die erste Webcam aus
+                webcam2.style.display = 'block'; // Zeigt die zweite Webcam an
+                btn1.classList.remove('active'); // Entfernt Aktiv-Markierung vom ersten Button
+                btn2.classList.add('active');    // Markiert den zweiten Button als aktiv
+            }
+        }
+        // Standardmäßig die erste Webcam beim Laden der Seite anzeigen
+        document.addEventListener('DOMContentLoaded', () => {
+            showWebcam('webcam1');
+        });
+    </script>
 </body>
 </html>
