@@ -19,7 +19,7 @@ def home(): # Ich habe den Funktionsnamen von 'index' zu 'home' geändert, um de
     news_articles = []
     try:
         params = {
-            'country': 'de',  # Nachrichten aus Deutschland. Du kannst dies ändern oder weglassen für globale Schlagzeilen.
+         # Nachrichten aus Deutschland. Du kannst dies ändern oder weglassen für globale Schlagzeilen.
             'apiKey': NEWS_API_KEY,
             'pageSize': 5      # Anzahl der Nachrichten, die du erhalten möchtest
         }
