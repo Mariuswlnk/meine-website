@@ -178,6 +178,7 @@
             <button onclick="showWebcam('webcam1')" id="btn-webcam1" class="active">Kulturpalast, Warschau</button>
             <button onclick="showWebcam('webcam2')" id="btn-webcam2">Leba, Polen</button>
             <button onclick="showWebcam('webcam3')" id="btn-webcam3">Krakau, Polen</button>
+            <button onclick="showWebcam('webcam4')" id="btn-webcam4">Danzig, Polen</button>
         </div>
 
         <div class="webcam-container" id="webcam1-container">
@@ -220,6 +221,20 @@
                     frameborder="0">
             </iframe>
         </div>
+        <div class="webcam-container" id="webcam4-container" style="display: none;">
+            <h2>Live Webcam: Danzig, Polen</h2>
+            <p>Aktuelle Ansicht von Danzig in Polen</p>
+
+            <iframe src="https://player.nadmorski24.pl/_camera?id=3&ad=true"
+                    onload="resizeIframe(this)"
+                    allow="autoplay; fullscreen"
+                    scrolling="yes"
+                    id="camera"
+                    style="width: 100%; height: 450px;"
+                    allowfullscreen
+                    frameborder="0">
+            </iframe>
+        </div>
         </main>
 
 
@@ -229,22 +244,25 @@
             // Referenzen zu allen Webcam-Containern
             const webcam1 = document.getElementById('webcam1-container');
             const webcam2 = document.getElementById('webcam2-container');
-            const webcam3 = document.getElementById('webcam3-container'); // NEU
-
+            const webcam3 = document.getElementById('webcam3-container');
+            const webcam4 = document.getElementById('webcam4-container');
             // Referenzen zu allen Buttons
             const btn1 = document.getElementById('btn-webcam1');
             const btn2 = document.getElementById('btn-webcam2');
-            const btn3 = document.getElementById('btn-webcam3');     // NEU
+            const btn3 = document.getElementById('btn-webcam3');
+            const btn4 = document.getElementById('btn-webcam4');
 
             // Zuerst alle Webcams ausblenden
             webcam1.style.display = 'none';
             webcam2.style.display = 'none';
-            webcam3.style.display = 'none'; // NEU
+            webcam3.style.display = 'none';
+            webcam4.style.display = 'none';
 
             // Dann alle Buttons als "inaktiv" markieren
             btn1.classList.remove('active');
             btn2.classList.remove('active');
-            btn3.classList.remove('active'); // NEU
+            btn3.classList.remove('active');
+            btn4.classList.remove('active');
 
             // Dann die ausgewählte Webcam anzeigen und den zugehörigen Button als "aktiv" markieren
             if (webcamId === 'webcam1') {
@@ -253,9 +271,12 @@
             } else if (webcamId === 'webcam2') {
                 webcam2.style.display = 'block';
                 btn2.classList.add('active');
-            } else if (webcamId === 'webcam3') { // NEUE BEDINGUNG für die 3. Webcam
+            } else if (webcamId === 'webcam3') {
                 webcam3.style.display = 'block';
                 btn3.classList.add('active');
+            } else if (webcamId === 'webcam4') {
+                webcam4.style.display = 'block';
+                btn4.classList.add('active');
             }
         }
 
