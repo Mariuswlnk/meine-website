@@ -54,6 +54,10 @@
             max-width: 800px;
             margin: 20px auto 10px auto; /* Abstand über den Webcams */
             text-align: center;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
         }
         .webcam-controls button {
             background-color: #28a745; /* Grün für Webcam-Buttons */
@@ -177,7 +181,7 @@
         <div class="webcam-controls">
             <button onclick="showWebcam('webcam1')" id="btn-webcam1" class="active">Kulturpalast, Warschau</button>
             <button onclick="showWebcam('webcam2')" id="btn-webcam2">Jastarnia, Polen</button>
-            <button onclick="showWebcam('webcam5')" id="btn-webcam4">Jastarnia, Polen</button>
+            <button onclick="showWebcam('webcam5')" id="btn-webcam5">Jastarnia, Polen</button>
             <button onclick="showWebcam('webcam3')" id="btn-webcam3">Krakau, Polen</button>
             <button onclick="showWebcam('webcam4')" id="btn-webcam4">Danzig, Polen</button>
         </div>
