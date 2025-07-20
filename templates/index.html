@@ -179,99 +179,48 @@
             {% endif %}
         </div>
         <div class="webcam-controls">
-            <button onclick="showWebcam('webcam1')" id="btn-webcam1" class="active">Kulturpalast, Warschau</button>
-            <button onclick="showWebcam('webcam2')" id="btn-webcam2">Jastarnia, Polen</button>
-            <button onclick="showWebcam('webcam5')" id="btn-webcam5">Jastarnia, Polen</button>
-            <button onclick="showWebcam('webcam3')" id="btn-webcam3">Krakau, Polen</button>
-            <button onclick="showWebcam('webcam4')" id="btn-webcam4">Danzig, Polen</button>
-        </div>
-        <div class="webcam-container" id="webcam1-container">
+            <button onclick="showWebcam('webcam1')" id="btn-webcam1">Kulturpalast, Warschau</button>
+            <button onclick="showWebcam('webcam2')" id="btn-webcam2">Jastarnia Hafen</button>
+            <button onclick="showWebcam('webcam5')" id="btn-webcam5">Jastarnia Ort</button>
+            <button onclick="showWebcam('webcam4')" id="btn-webcam4">Jastarnia Strand</button> <button onclick="showWebcam('webcam3')" id="btn-webcam3">Krakau</button>
+            <button onclick="showWebcam('webcam6')" id="btn-webcam6">Danzig</button> </div>
+
+        <div class="webcam-container" id="webcam1-container" style="display: none;">
             <h2>Live Webcam: Kulturpalast, Warschau</h2>
             <p>Aktuelle Ansicht des beeindruckenden Kulturpalastes und der Umgebung in Warschau, Polen.</p>
-
-            <iframe
-                src="https://www.earthtv.com/de/webcam/warschau-kulturpalast/embed"
-                frameborder="0"
-                allowfullscreen
-                width="100%"
-                height="450">
-            </iframe>
+            <iframe src="https://www.earthtv.com/de/webcam/warschau-kulturpalast/embed" frameborder="0" allowfullscreen width="100%" height="450"></iframe>
         </div>
+
         <div class="webcam-container" id="webcam2-container" style="display: none;">
-            <h2>Live Webcam: Jastarnia, Polen</h2>
-            <p>Aktuelle Ansicht von Jastarnia in Polen</p>
-
-            <iframe src="//player.webcamera.pl/jastarnia_cam_a14385"
-                    onload="resizeIframe(this)"
-                    allow="autoplay; fullscreen"
-                    scrolling="no"
-                    id="camera"
-                    style="width: 100%; height: 450px;"
-                    allowfullscreen
-                    frameborder="0">
-            </iframe>
-             <iframe width="95%" height="500" style="margin: 0 auto"
-                    src="https://embed.windy.com/embed2.html?lat=54.660&lon=18.657&detailLat=54.696&detailLon=18.672&width=&height=500&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1"
-                    frameborder="0">
-            </iframe>
+            <h2>Live Webcam: Jastarnia Augustyna, Polen</h2>
+            <p>Aktuelle Ansicht vom Hafen in Jastarnia.</p>
+            <iframe src="//player.webcamera.pl/jastarnia_cam_a14385" allow="autoplay; fullscreen" scrolling="no" style="width: 100%; height: 450px;" allowfullscreen frameborder="0"></iframe>
+            <iframe width="95%" height="500" style="margin: 0 auto" src="https://embed.windy.com/embed2.html?lat=54.660&lon=18.657&detailLat=54.696&detailLon=18.672&width=&height=500&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0"></iframe>
         </div>
-        <div class="webcam-container" id="webcam5-container">
-            <h2>Live Webcam: Jastarnia</h2>
 
-            <iframe
-                src="//player.nadmorski24.pl/_camera?id=20&ad=true"
-                frameborder="0"
-                allowfullscreen
-                width="100%"
-                height="450">
-            </iframe>
-             <iframe width="95%" height="500" style="margin: 0 auto"
-                    src="https://embed.windy.com/embed2.html?lat=54.660&lon=18.657&detailLat=54.696&detailLon=18.672&width=&height=500&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1"
-                    frameborder="0">
-            </iframe>
+        <div class="webcam-container" id="webcam5-container" style="display: none;">
+            <h2>Live Webcam: Jastarnia Molo</h2>
+            <iframe src="//player.nadmorski24.pl/_camera?id=20&ad=true" frameborder="0" allowfullscreen width="100%" height="450"></iframe>
+            <iframe width="95%" height="500" style="margin: 0 auto" src="https://embed.windy.com/embed2.html?lat=54.660&lon=18.657&detailLat=54.696&detailLon=18.672&width=&height=500&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0"></iframe>
+        </div>
+
         <div class="webcam-container" id="webcam4-container" style="display: none;">
             <h2>Live Webcam: Jastarnia Strand, Polen</h2>
-            <p>Aktuelle Ansicht von Jastarnia in Polen</p>
-
-            <iframe src="//player.nadmorski24.pl/_camera?id=99&ad=true"
-                    onload="resizeIframe(this)"
-                    allow="autoplay; fullscreen"
-                    scrolling="no"
-                    id="camera"
-                    style="width: 100%; height: 450px;"
-                    allowfullscreen
-                    frameborder="0">
-            </iframe>
-
-
+            <p>Aktuelle Ansicht vom Strand in Jastarnia.</p>
+            <iframe src="//player.nadmorski24.pl/_camera?id=99&ad=true" allow="autoplay; fullscreen" scrolling="no" style="width: 100%; height: 450px;" allowfullscreen frameborder="0"></iframe>
+            <iframe width="95%" height="500" style="margin: 0 auto" src="https://embed.windy.com/embed2.html?lat=54.660&lon=18.657&detailLat=54.696&detailLon=18.672&width=&height=500&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0"></iframe>
         </div>
+
         <div class="webcam-container" id="webcam3-container" style="display: none;">
             <h2>Live Webcam: Krakau, Polen</h2>
             <p>Aktuelle Ansicht von Krakau in Polen</p>
-
-            <iframe src="https://www.webcamera.pl/kamera/krakow4/"
-                    onload="resizeIframe(this)"
-                    allow="autoplay; fullscreen"
-                    scrolling="yes"
-                    id="camera"
-                    style="width: 100%; height: 450px;"
-                    allowfullscreen
-                    frameborder="0">
-            </iframe>
+            <iframe src="https://www.webcamera.pl/kamera/krakow4/" allow="autoplay; fullscreen" scrolling="yes" style="width: 100%; height: 450px;" allowfullscreen frameborder="0"></iframe>
         </div>
+
         <div class="webcam-container" id="webcam6-container" style="display: none;">
             <h2>Live Webcam: Danzig, Polen</h2>
             <p>Aktuelle Ansicht von Danzig in Polen</p>
-
-            <iframe src="https://player.nadmorski24.pl/_camera?id=3&ad=true"
-                    onload="resizeIframe(this)"
-                    allow="autoplay; fullscreen"
-                    scrolling="yes"
-                    id="camera"
-                    style="width: 100%; height: 450px;"
-                    allowfullscreen
-                    frameborder="0">
-            </iframe>
+            <iframe src="https://player.nadmorski24.pl/_camera?id=3&ad=true" allow="autoplay; fullscreen" scrolling="yes" style="width: 100%; height: 450px;" allowfullscreen frameborder="0"></iframe>
         </div>
 
         </main>
