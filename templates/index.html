@@ -225,6 +225,20 @@
                 width="100%"
                 height="450">
             </iframe>
+         <div class="webcam-container" id="webcam4-container" style="display: none;">
+            <h2>Live Webcam: Jastarnia Strand, Polen</h2>
+            <p>Aktuelle Ansicht von Jastarnia in Polen</p>
+
+            <iframe src="//player.nadmorski24.pl/_camera?id=99&ad=true"
+                    onload="resizeIframe(this)"
+                    allow="autoplay; fullscreen"
+                    scrolling="no"
+                    id="camera"
+                    style="width: 100%; height: 450px;"
+                    allowfullscreen
+                    frameborder="0">
+            </iframe>
+
              <iframe width="95%" height="500" style="margin: 0 auto"
                     src="https://embed.windy.com/embed2.html?lat=54.660&lon=18.657&detailLat=54.696&detailLon=18.672&width=&height=500&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1"
                     frameborder="0">
@@ -244,7 +258,7 @@
                     frameborder="0">
             </iframe>
         </div>
-        <div class="webcam-container" id="webcam4-container" style="display: none;">
+        <div class="webcam-container" id="webcam6-container" style="display: none;">
             <h2>Live Webcam: Danzig, Polen</h2>
             <p>Aktuelle Ansicht von Danzig in Polen</p>
 
@@ -271,12 +285,14 @@
             const webcam3 = document.getElementById('webcam3-container');
             const webcam4 = document.getElementById('webcam4-container');
             const webcam5 = document.getElementById('webcam5-container');
+            const webcam6 = document.getElementById('webcam6-container');
             // Referenzen zu allen Buttons
             const btn1 = document.getElementById('btn-webcam1');
             const btn2 = document.getElementById('btn-webcam2');
             const btn3 = document.getElementById('btn-webcam3');
             const btn4 = document.getElementById('btn-webcam4');
             const btn5 = document.getElementById('btn-webcam5');
+            const btn6 = document.getElementById('btn-webcam6');
 
             // Zuerst alle Webcams ausblenden
             webcam1.style.display = 'none';
@@ -284,6 +300,7 @@
             webcam3.style.display = 'none';
             webcam4.style.display = 'none';
             webcam5.style.display = 'none';
+            webcam6.style.display = 'none';
 
             // Dann alle Buttons als "inaktiv" markieren
             btn1.classList.remove('active');
@@ -308,6 +325,10 @@
             } else if (webcamId === 'webcam5') {
                 webcam5.style.display = 'block';
                 btn5.classList.add('active');
+            }
+              else if (webcamId === 'webcam6') {
+                webcam6.style.display = 'block';
+                btn6.classList.add('active');
             }
         }
 
