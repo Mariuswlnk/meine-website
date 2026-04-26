@@ -1,289 +1,174 @@
 <!doctype html>
-<html>
+<html lang="de">
 <head>
-    <title>Meine erste Flask-Seite</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meine Website</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        /* Zusätzliches CSS für NASA APOD (wie zuvor) */
-        .apod-section {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .apod-section h2 {
-            color: #333;
-            margin-bottom: 15px;
-        }
-        .apod-section img,
-        .apod-section iframe { /* Für Bilder und Videos */
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-top: 15px;
-            box-shadow: 0 0 8px rgba(0,0,0,0.1);
-        }
-        .apod-section p {
-            font-size: 1em;
-            line-height: 1.6;
-            color: #555;
-            text-align: left; /* Text linksbündig für bessere Lesbarkeit */
-            margin-top: 15px;
-        }
-        .apod-section .credit {
-            font-size: 0.8em;
-            color: #777;
-            margin-top: 10px;
-        }
-
-        /* Zusätzliches CSS für die Webcam-Einbettung */
-        .webcam-container {
-            max-width: 800px; /* Oder eine andere Breite, die zu deinem Layout passt */
-            margin: 20px auto; /* Etwas Abstand nach oben und unten, zentriert */
-            border: 1px solid #ccc;
-            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-            background-color: #fff;
-            padding: 10px;
-            /* margin-bottom: 20px; wird jetzt von JavaScript gesteuert, wenn sie ausgeblendet sind */
-        }
-        /* Buttons für Webcam-Auswahl */
-        .webcam-controls {
-            max-width: 800px;
-            margin: 20px auto 10px auto; /* Abstand über den Webcams */
-            text-align: center;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-        .webcam-controls button {
-            background-color: #28a745; /* Grün für Webcam-Buttons */
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 0 5px;
-        }
-        .webcam-controls button:hover {
-            background-color: #218838;
-        }
-        .webcam-controls button.active {
-            background-color: #0056b3; /* Dunklerer Blau für aktive Webcam */
-        }
-
-
-        .webcam-container h2 {
-            margin-top: 0;
-            color: #333;
-        }
-        .webcam-source {
-            font-size: 0.8em;
-            color: #888;
-            margin-top: 10px;
-            text-align: center;
-        }
-        /* Basierend auf deinem Original-Layout: */
-        body {
-            font-family: sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4; /* Beispiel Hintergrundfarbe */
-        }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px 0;
-            text-align: center;
-        }
-        main {
-            background-color: white;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        form {
-            margin-top: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        textarea {
-            width: calc(100% - 10px); /* Berücksichtigt Padding */
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        h2 {
-            margin-top: 20px;
-            color: #333;
-        }
-    </style>
 </head>
 <body>
-    <header>
-        <h1>Willkommen auf meiner Website!</h1>
-    </header>
-    <main>
-        <p>Diese Seite wird von Flask gerendert.</p>
+    <div class="page-shell">
+        <header class="hero">
+            <div class="hero-copy">
+                <p class="eyebrow">Live Views, Wetter und Weltall</p>
+                <h1>Ein moderner Blick auf Webcams, NASA APOD und kleine Textanalysen.</h1>
+                <p class="hero-text">
+                    Deine Flask-Seite zeigt jetzt Inhalte in einem klareren, moderneren Layout mit besserer Struktur
+                    fuer mobile und grosse Bildschirme.
+                </p>
+            </div>
+            <div class="hero-card">
+                <div class="stat">
+                    <span class="stat-label">Webcams</span>
+                    <strong>6 Orte</strong>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">NASA</span>
+                    <strong>APOD live</strong>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Tool</span>
+                    <strong>Textanalyse</strong>
+                </div>
+            </div>
+        </header>
 
-        <form method="post" action="/">
-            <label for="text">Text zur Analyse:</label><br>
-            <textarea id="text" name="text" rows="4" cols="50" placeholder="Hier deinen Text eingeben..."></textarea><br><br>
-            <button type="submit">Analysieren</button>
-        </form>
+        <main class="content-grid">
+            <section class="panel panel-form">
+                <div class="panel-heading">
+                    <p class="section-kicker">Textanalyse</p>
+                    <h2>Kurzer Check fuer deinen Text</h2>
+                </div>
 
-        {% if result %}
-        <h2>Analyse Ergebnis:</h2>
-        <p>{{ result }}</p>
-        {% endif %}
+                <form method="post" action="/" class="analysis-form">
+                    <label for="text">Text zur Analyse</label>
+                    <textarea id="text" name="text" rows="5" placeholder="Hier deinen Text eingeben..."></textarea>
+                    <button type="submit">Analysieren</button>
+                </form>
 
-        <div class="apod-section">
-            <h2>NASA Astronomy Picture of the Day</h2>
-            {% if apod_data %}
-                <h3>{{ apod_data.title }}</h3>
-                {% if apod_data.media_type == 'image' %}
-                    <img src="{{ apod_data.url }}" alt="{{ apod_data.title }}">
-                {% elif apod_data.media_type == 'video' %}
-                    <iframe
-                        width="100%"
-                        height="400"
-                        src="{{ apod_data.url }}"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
+                {% if result %}
+                <div class="result-card">
+                    <span class="result-label">Ergebnis</span>
+                    <p>{{ result }}</p>
+                </div>
                 {% endif %}
-                <p>{{ apod_data.explanation }}</p>
-                {% if apod_data.copyright %}
-                    <p class="credit">Bildnachweis: {{ apod_data.copyright }}</p>
+            </section>
+
+            <section class="panel apod-section">
+                <div class="panel-heading">
+                    <p class="section-kicker">NASA APOD</p>
+                    <h2>Astronomy Picture of the Day</h2>
+                </div>
+
+                {% if apod_data %}
+                    <h3 class="media-title">{{ apod_data.title }}</h3>
+                    {% if apod_data.media_type == 'image' %}
+                        <img class="feature-media" src="{{ apod_data.url }}" alt="{{ apod_data.title }}">
+                    {% elif apod_data.media_type == 'video' %}
+                        <iframe
+                            class="feature-media"
+                            src="{{ apod_data.url }}"
+                            title="{{ apod_data.title }}"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    {% endif %}
+                    <p class="body-copy">{{ apod_data.explanation }}</p>
+                    {% if apod_data.copyright %}
+                        <p class="credit">Bildnachweis: {{ apod_data.copyright }}</p>
+                    {% endif %}
+                {% else %}
+                    <p class="body-copy">Astronomy Picture of the Day konnte nicht geladen werden.</p>
                 {% endif %}
-            {% else %}
-                <p>Astronomy Picture of the Day konnte nicht geladen werden.</p>
-            {% endif %}
-        </div>
-        <div class="webcam-controls">
-            <button onclick="showWebcam('webcam1')" id="btn-webcam1">Kulturpalast, Warschau</button>
-            <button onclick="showWebcam('webcam2')" id="btn-webcam2">Jastarnia Augustyna</button>
-            <button onclick="showWebcam('webcam5')" id="btn-webcam5">Jastarnia Molo</button>
-            <button onclick="showWebcam('webcam4')" id="btn-webcam4">Jastarnia Strand</button> <button onclick="showWebcam('webcam3')" id="btn-webcam3">Krakau</button>
-            <button onclick="showWebcam('webcam6')" id="btn-webcam6">Danzig</button> </div>
+            </section>
 
-        <div class="webcam-container" id="webcam1-container" style="display: none;">
-            <h2>Live Webcam: Kulturpalast, Warschau</h2>
-            <p>Aktuelle Ansicht des beeindruckenden Kulturpalastes und der Umgebung in Warschau, Polen.</p>
-            <iframe src="https://www.earthtv.com/de/webcam/warschau-kulturpalast/embed" frameborder="0" allowfullscreen width="100%" height="450"></iframe>
-        </div>
+            <section class="panel webcams-panel">
+                <div class="panel-heading">
+                    <p class="section-kicker">Polen Live</p>
+                    <h2>Webcam-Auswahl</h2>
+                </div>
 
-        <div class="webcam-container" id="webcam2-container" style="display: none;">
-            <h2>Live Webcam: Jastarnia Augustyna, Polen</h2>
-            <p>Aktuelle Ansicht vom Hafen in Jastarnia.</p>
-            <iframe src="//player.webcamera.pl/jastarnia_cam_a14385" allow="autoplay; fullscreen" scrolling="no" style="width: 100%; height: 450px;" allowfullscreen frameborder="0"></iframe>
-            <iframe width="95%" height="500" style="margin: 0 auto" src="https://embed.windy.com/embed2.html?lat=54.660&lon=18.657&detailLat=54.696&detailLon=18.672&width=&height=500&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0"></iframe>
-        </div>
+                <div class="webcam-controls" role="tablist" aria-label="Webcam Auswahl">
+                    <button type="button" onclick="showWebcam('webcam1')" id="btn-webcam1">Warschau</button>
+                    <button type="button" onclick="showWebcam('webcam2')" id="btn-webcam2">Jastarnia Augustyna</button>
+                    <button type="button" onclick="showWebcam('webcam5')" id="btn-webcam5">Jastarnia Molo</button>
+                    <button type="button" onclick="showWebcam('webcam4')" id="btn-webcam4">Jastarnia Strand</button>
+                    <button type="button" onclick="showWebcam('webcam3')" id="btn-webcam3">Krakau</button>
+                    <button type="button" onclick="showWebcam('webcam6')" id="btn-webcam6">Danzig</button>
+                </div>
 
-        <div class="webcam-container" id="webcam5-container" style="display: none;">
-            <h2>Live Webcam: Jastarnia Molo</h2>
-            <iframe src="//player.nadmorski24.pl/_camera?id=20&ad=true" frameborder="0" allowfullscreen width="100%" height="450"></iframe>
-            <iframe width="95%" height="500" style="margin: 0 auto" src="https://embed.windy.com/embed2.html?lat=54.660&lon=18.657&detailLat=54.696&detailLon=18.672&width=&height=500&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0"></iframe>
-        </div>
+                <div class="webcam-container" id="webcam1-container">
+                    <div class="webcam-header">
+                        <h3>Live Webcam: Kulturpalast, Warschau</h3>
+                        <p>Aktuelle Ansicht des Kulturpalastes und der Umgebung in Warschau, Polen.</p>
+                    </div>
+                    <iframe class="webcam-frame" src="https://www.earthtv.com/de/webcam/warschau-kulturpalast/embed" frameborder="0" allowfullscreen title="Warschau Kulturpalast"></iframe>
+                </div>
 
-        <div class="webcam-container" id="webcam4-container" style="display: none;">
-            <h2>Live Webcam: Jastarnia Strand, Polen</h2>
-            <p>Aktuelle Ansicht vom Strand in Jastarnia.</p>
-            <iframe src="//player.nadmorski24.pl/_camera?id=99&ad=true" allow="autoplay; fullscreen" scrolling="no" style="width: 100%; height: 450px;" allowfullscreen frameborder="0"></iframe>
-            <iframe width="95%" height="500" style="margin: 0 auto" src="https://embed.windy.com/embed2.html?lat=54.660&lon=18.657&detailLat=54.696&detailLon=18.672&width=&height=500&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0"></iframe>
-        </div>
+                <div class="webcam-container" id="webcam2-container">
+                    <div class="webcam-header">
+                        <h3>Live Webcam: Jastarnia Augustyna</h3>
+                        <p>Aktuelle Ansicht vom Hafen in Jastarnia mit zusaetzlicher Wetterkarte.</p>
+                    </div>
+                    <iframe class="webcam-frame" src="//player.webcamera.pl/jastarnia_cam_a14385" allow="autoplay; fullscreen" scrolling="no" allowfullscreen frameborder="0" title="Jastarnia Augustyna"></iframe>
+                    <iframe class="weather-frame" src="https://embed.windy.com/embed2.html?lat=54.660&lon=18.657&detailLat=54.696&detailLon=18.672&width=&height=500&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0" title="Windkarte Jastarnia"></iframe>
+                </div>
 
-        <div class="webcam-container" id="webcam3-container" style="display: none;">
-            <h2>Live Webcam: Krakau, Polen</h2>
-            <p>Aktuelle Ansicht von Krakau in Polen</p>
-            <iframe src="https://www.webcamera.pl/kamera/krakow4/" allow="autoplay; fullscreen" scrolling="yes" style="width: 100%; height: 450px;" allowfullscreen frameborder="0"></iframe>
-        </div>
+                <div class="webcam-container" id="webcam5-container">
+                    <div class="webcam-header">
+                        <h3>Live Webcam: Jastarnia Molo</h3>
+                        <p>Blick auf das Molo mit derselben Windy-Karte fuer Wind und Wetterlage.</p>
+                    </div>
+                    <iframe class="webcam-frame" src="//player.nadmorski24.pl/_camera?id=20&ad=true" frameborder="0" allowfullscreen title="Jastarnia Molo"></iframe>
+                    <iframe class="weather-frame" src="https://embed.windy.com/embed2.html?lat=54.660&lon=18.657&detailLat=54.696&detailLon=18.672&width=&height=500&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0" title="Windkarte Jastarnia Molo"></iframe>
+                </div>
 
-        <div class="webcam-container" id="webcam6-container" style="display: none;">
-            <h2>Live Webcam: Danzig, Polen</h2>
-            <p>Aktuelle Ansicht von Danzig in Polen</p>
-            <iframe src="https://player.nadmorski24.pl/_camera?id=3&ad=true" allow="autoplay; fullscreen" scrolling="yes" style="width: 100%; height: 450px;" allowfullscreen frameborder="0"></iframe>
-        </div>
+                <div class="webcam-container" id="webcam4-container">
+                    <div class="webcam-header">
+                        <h3>Live Webcam: Jastarnia Strand</h3>
+                        <p>Aktuelle Ansicht vom Strand in Jastarnia mit Windkarte darunter.</p>
+                    </div>
+                    <iframe class="webcam-frame" src="//player.nadmorski24.pl/_camera?id=99&ad=true" allow="autoplay; fullscreen" scrolling="no" allowfullscreen frameborder="0" title="Jastarnia Strand"></iframe>
+                    <iframe class="weather-frame" src="https://embed.windy.com/embed2.html?lat=54.660&lon=18.657&detailLat=54.696&detailLon=18.672&width=&height=500&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0" title="Windkarte Jastarnia Strand"></iframe>
+                </div>
 
+                <div class="webcam-container" id="webcam3-container">
+                    <div class="webcam-header">
+                        <h3>Live Webcam: Krakau</h3>
+                        <p>Aktuelle Ansicht von Krakau in Polen.</p>
+                    </div>
+                    <iframe class="webcam-frame" src="https://www.webcamera.pl/kamera/krakow4/" allow="autoplay; fullscreen" scrolling="yes" allowfullscreen frameborder="0" title="Krakau"></iframe>
+                </div>
+
+                <div class="webcam-container" id="webcam6-container">
+                    <div class="webcam-header">
+                        <h3>Live Webcam: Danzig</h3>
+                        <p>Aktuelle Ansicht von Danzig in Polen.</p>
+                    </div>
+                    <iframe class="webcam-frame" src="https://player.nadmorski24.pl/_camera?id=3&ad=true" allow="autoplay; fullscreen" scrolling="yes" allowfullscreen frameborder="0" title="Danzig"></iframe>
+                </div>
+            </section>
         </main>
-
-
+    </div>
 
     <script>
         function showWebcam(webcamId) {
-            // Referenzen zu allen Webcam-Containern
-            const webcam1 = document.getElementById('webcam1-container');
-            const webcam2 = document.getElementById('webcam2-container');
-            const webcam3 = document.getElementById('webcam3-container');
-            const webcam4 = document.getElementById('webcam4-container');
-            const webcam5 = document.getElementById('webcam5-container');
-            const webcam6 = document.getElementById('webcam6-container');
-            // Referenzen zu allen Buttons
-            const btn1 = document.getElementById('btn-webcam1');
-            const btn2 = document.getElementById('btn-webcam2');
-            const btn3 = document.getElementById('btn-webcam3');
-            const btn4 = document.getElementById('btn-webcam4');
-            const btn5 = document.getElementById('btn-webcam5');
-            const btn6 = document.getElementById('btn-webcam6');
+            const webcamIds = ['webcam1', 'webcam2', 'webcam3', 'webcam4', 'webcam5', 'webcam6'];
 
-            // Zuerst alle Webcams ausblenden
-            webcam1.style.display = 'none';
-            webcam2.style.display = 'none';
-            webcam3.style.display = 'none';
-            webcam4.style.display = 'none';
-            webcam5.style.display = 'none';
-            webcam6.style.display = 'none';
+            webcamIds.forEach((id) => {
+                const container = document.getElementById(`${id}-container`);
+                const button = document.getElementById(`btn-${id}`);
 
-            // Dann alle Buttons als "inaktiv" markieren
-            btn1.classList.remove('active');
-            btn2.classList.remove('active');
-            btn3.classList.remove('active');
-            btn4.classList.remove('active');
-            btn5.classList.remove('active');
-
-            // Dann die ausgewählte Webcam anzeigen und den zugehörigen Button als "aktiv" markieren
-            if (webcamId === 'webcam1') {
-                webcam1.style.display = 'block';
-                btn1.classList.add('active');
-            } else if (webcamId === 'webcam2') {
-                webcam2.style.display = 'block';
-                btn2.classList.add('active');
-            } else if (webcamId === 'webcam3') {
-                webcam3.style.display = 'block';
-                btn3.classList.add('active');
-            } else if (webcamId === 'webcam4') {
-                webcam4.style.display = 'block';
-                btn4.classList.add('active');
-            } else if (webcamId === 'webcam5') {
-                webcam5.style.display = 'block';
-                btn5.classList.add('active');
-            }
-              else if (webcamId === 'webcam6') {
-                webcam6.style.display = 'block';
-                btn6.classList.add('active');
-            }
+                container.style.display = id === webcamId ? 'grid' : 'none';
+                button.classList.toggle('active', id === webcamId);
+                button.setAttribute('aria-selected', id === webcamId ? 'true' : 'false');
+            });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Standardmäßig die erste Webcam beim Laden der Seite anzeigen
             showWebcam('webcam1');
         });
     </script>
