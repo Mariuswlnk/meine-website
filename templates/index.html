@@ -37,6 +37,18 @@
         </header>
 
         <main class="content-grid">
+            <section class="panel utility-panel">
+                <div class="panel-heading utility-heading">
+                    <div>
+                        <p class="section-kicker">Anzeige</p>
+                        <h2>Theme umschalten</h2>
+                    </div>
+                    <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false">
+                        <span class="toggle-label">Light Mode</span>
+                    </button>
+                </div>
+            </section>
+
             <section class="panel panel-form">
                 <div class="panel-heading">
                     <p class="section-kicker">Textanalyse</p>
@@ -155,6 +167,19 @@
     </div>
 
     <script>
+        const THEME_STORAGE_KEY = 'preferred-theme';
+
+        function applyTheme(theme) {
+            document.body.dataset.theme = theme;
+
+            const toggle = document.getElementById('theme-toggle');
+            const label = toggle.querySelector('.toggle-label');
+            const isLight = theme === 'light';
+
+            toggle.setAttribute('aria-pressed', isLight ? 'true' : 'false');
+            label.textContent = isLight ? 'Dark Mode' : 'Light Mode';
+        }
+
         function showWebcam(webcamId) {
             const webcamIds = ['webcam1', 'webcam2', 'webcam3', 'webcam4', 'webcam5', 'webcam6'];
 
@@ -169,6 +194,16 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            const preferredTheme = savedTheme || 'dark';
+            applyTheme(preferredTheme);
+
+            document.getElementById('theme-toggle').addEventListener('click', () => {
+                const nextTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+                localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+                applyTheme(nextTheme);
+            });
+
             showWebcam('webcam1');
         });
     </script>
