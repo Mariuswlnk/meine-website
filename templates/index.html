@@ -110,6 +110,7 @@
                     <button type="button" onclick="showWebcam('webcam4')" id="btn-webcam4">Jastarnia Strand</button>
                     <button type="button" onclick="showWebcam('webcam3')" id="btn-webcam3">Krakau</button>
                     <button type="button" onclick="showWebcam('webcam6')" id="btn-webcam6">Danzig</button>
+                    <button type="button" onclick="showWebcam('webcam7')" id="btn-webcam7">Sopot Molo</button>
                 </div>
 
                 <div class="webcam-container" id="webcam1-container">
@@ -162,6 +163,15 @@
                     </div>
                     <iframe class="webcam-frame" src="https://player.nadmorski24.pl/_camera?id=3&ad=true" allow="autoplay; fullscreen" scrolling="yes" allowfullscreen frameborder="0" title="Danzig"></iframe>
                 </div>
+
+                <div class="webcam-container" id="webcam7-container">
+                    <div class="webcam-header">
+                        <h3>Live Webcam: Sopot Molo</h3>
+                        <p>Blick auf das Molo in Sopot mit passender Windy-Karte fuer die Wetterlage an der Kueste.</p>
+                    </div>
+                    <iframe class="webcam-frame" src="//player.nadmorski24.pl/_camera?id=32&ad=true" allow="autoplay; fullscreen" scrolling="no" allowfullscreen frameborder="0" title="Sopot Molo"></iframe>
+                    <iframe class="weather-frame" src="https://embed.windy.com/embed2.html?lat=54.378&lon=18.559&detailLat=54.450&detailLon=18.570&width=&height=500&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0" title="Windkarte Sopot"></iframe>
+                </div>
             </section>
         </main>
     </div>
@@ -181,7 +191,7 @@
         }
 
         function showWebcam(webcamId) {
-            const webcamIds = ['webcam1', 'webcam2', 'webcam3', 'webcam4', 'webcam5', 'webcam6'];
+            const webcamIds = ['webcam1', 'webcam2', 'webcam3', 'webcam4', 'webcam5', 'webcam6', 'webcam7'];
 
             webcamIds.forEach((id) => {
                 const container = document.getElementById(`${id}-container`);
