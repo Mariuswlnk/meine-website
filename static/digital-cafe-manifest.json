@@ -1,0 +1,10 @@
+{
+  "name": "Digital Cafe",
+  "short_name": "Cafe",
+  "description": "Eine ruhige persoenliche Browser-Startseite.",
+  "start_url": "/digital-cafe",
+  "display": "standalone",
+  "background_color": "#16140f",
+  "theme_color": "#6c9a8b",
+  "orientation": "portrait-primary"
+}

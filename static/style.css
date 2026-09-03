@@ -121,6 +121,43 @@ textarea {
     line-height: 1.7;
 }
 
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.primary-link,
+.secondary-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.primary-link {
+    color: var(--button-text);
+    background: linear-gradient(135deg, #d6f4df 0%, #8ed8b2 42%, #59c3ff 100%);
+    box-shadow: 0 16px 30px rgba(89, 195, 255, 0.24);
+}
+
+.secondary-link {
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+}
+
+.primary-link:hover,
+.secondary-link:hover {
+    transform: translateY(-1px);
+}
+
 .hero-card {
     display: grid;
     gap: 16px;

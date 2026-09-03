@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#6c9a8b">
+    <title>Digital Cafe</title>
+    <link rel="manifest" href="{{ url_for('static', filename='digital-cafe-manifest.json') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='digital-cafe.css') }}?v=2">
+</head>
+<body class="cafe-page" data-scene="auto">
+    <canvas class="ambient-canvas" id="ambient-canvas" aria-hidden="true"></canvas>
+    <div class="cafe-backdrop" id="cafe-backdrop" aria-hidden="true"></div>
+    <div class="cafe-noise" aria-hidden="true"></div>
+
+    <main class="cafe-shell" id="cafe-shell">
+        <nav class="topbar" aria-label="Seitennavigation">
+            <a class="home-link" href="{{ url_for('home') }}">
+                <i data-lucide="arrow-left"></i>
+                <span>Zurueck</span>
+            </a>
+            <form class="search-pill" id="search-form" role="search">
+                <i data-lucide="search"></i>
+                <input id="search-input" type="search" autocomplete="off" placeholder="Suchen oder URL eingeben">
+                <select id="search-engine" aria-label="Suchmaschine">
+                    <option value="google">Google</option>
+                    <option value="duckduckgo">DuckDuckGo</option>
+                    <option value="perplexity">Perplexity</option>
+                    <option value="chatgpt">ChatGPT</option>
+                </select>
+            </form>
+            <button class="icon-button" id="command-button" type="button" aria-label="Command Palette">
+                <i data-lucide="command"></i>
+            </button>
+            <button class="icon-button" id="settings-button" type="button" aria-label="Einstellungen">
+                <i data-lucide="settings"></i>
+            </button>
+        </nav>
+
+        <section class="hero-zone" aria-label="Begruessung">
+            <div class="greeting-block">
+                <p class="kicker" id="day-progress">Digital Cafe</p>
+                <h1 id="greeting">Guten Morgen</h1>
+                <p class="welcome" id="welcome">Willkommen zurueck, Marius.</p>
+            </div>
+            <div class="time-block">
+                <div class="clock-row">
+                    <time class="digital-clock" id="digital-clock">00:00</time>
+                    <div class="analog-clock" aria-hidden="true">
+                        <span class="hand hour-hand" id="hour-hand"></span>
+                        <span class="hand minute-hand" id="minute-hand"></span>
+                        <span class="clock-pin"></span>
+                    </div>
+                </div>
+                <p id="date-line">Montag, 14. Juli</p>
+            </div>
+        </section>
+
+        <section class="cafe-grid" aria-label="Startseite">
+            <article class="glass-card focus-card reveal-card">
+                <div class="card-heading">
+                    <div>
+                        <p class="eyebrow">Heute</p>
+                        <h2>Today's Focus</h2>
+                    </div>
+                    <i data-lucide="sparkles"></i>
+                </div>
+                <textarea id="focus-input" rows="3" placeholder="Was verdient heute deine beste Aufmerksamkeit?"></textarea>
+            </article>
+
+            <article class="glass-card weather-card reveal-card">
+                <div class="card-heading">
+                    <div>
+                        <p class="eyebrow">Wetter</p>
+                        <h2 id="weather-place">Berlin</h2>
+                    </div>
+                    <img id="weather-icon" alt="" hidden>
+                </div>
+                <div class="weather-main">
+                    <strong id="weather-temp">--</strong>
+                    <span id="weather-description">Wird geladen</span>
+                </div>
+                <div class="weather-meta">
+                    <span id="weather-range">H -- / T --</span>
+                    <span id="weather-humidity">--% Luft</span>
+                </div>
+            </article>
+
+            <article class="glass-card quote-card reveal-card">
+                <i data-lucide="quote"></i>
+                <blockquote id="quote-text"></blockquote>
+            </article>
+
+            <article class="glass-card music-card reveal-card">
+                <div class="card-heading">
+                    <div>
+                        <p class="eyebrow">Musik</p>
+                        <h2>Ambient Stream</h2>
+                    </div>
+                    <select id="music-source" aria-label="Musikquelle">
+                        <option value="lofi">Lofi Girl</option>
+                        <option value="spotify">Spotify</option>
+                        <option value="youtube">YouTube Music</option>
+                    </select>
+                </div>
+                <div class="music-frame-wrap" id="music-frame-wrap"></div>
+            </article>
+
+            <article class="glass-card sound-card reveal-card">
+                <div class="card-heading">
+                    <div>
+                        <p class="eyebrow">Natur</p>
+                        <h2>Sounds</h2>
+                    </div>
+                    <button class="soft-button" id="sound-toggle" type="button">
+                        <i data-lucide="play"></i>
+                        <span>Play</span>
+                    </button>
+                </div>
+                <div class="sound-options" id="sound-options"></div>
+                <label class="range-label" for="volume-range">
+                    <span>Lautstaerke</span>
+                    <input id="volume-range" type="range" min="0" max="1" step="0.01">
+                </label>
+            </article>
+
+            <article class="glass-card quick-card reveal-card">
+                <div class="card-heading">
+                    <div>
+                        <p class="eyebrow">Links</p>
+                        <h2>Schnellzugriffe</h2>
+                    </div>
+                    <button class="icon-button small" id="add-link-button" type="button" aria-label="Link hinzufuegen">
+                        <i data-lucide="plus"></i>
+                    </button>
+                </div>
+                <div class="quick-links" id="quick-links"></div>
+            </article>
+
+            <article class="glass-card todo-card reveal-card">
+                <div class="card-heading">
+                    <div>
+                        <p class="eyebrow">Liste</p>
+                        <h2>Aufgaben</h2>
+                    </div>
+                    <i data-lucide="check-circle-2"></i>
+                </div>
+                <form class="todo-form" id="todo-form">
+                    <input id="todo-input" type="text" placeholder="Neue Aufgabe">
+                    <button class="icon-button small" type="submit" aria-label="Aufgabe hinzufuegen">
+                        <i data-lucide="plus"></i>
+                    </button>
+                </form>
+                <ul class="todo-list" id="todo-list"></ul>
+            </article>
+
+            <article class="glass-card calendar-card reveal-card">
+                <div class="card-heading">
+                    <div>
+                        <p class="eyebrow">Kalender</p>
+                        <h2 id="calendar-title">Monat</h2>
+                    </div>
+                    <i data-lucide="calendar-days"></i>
+                </div>
+                <div class="calendar" id="calendar"></div>
+            </article>
+        </section>
+
+        <footer class="cafe-footer">
+            <span id="footer-line">Ruhig starten. Klar weitergehen.</span>
+        </footer>
+    </main>
+
+    <dialog class="settings-modal" id="settings-modal">
+        <form method="dialog" class="settings-panel">
+            <div class="modal-heading">
+                <div>
+                    <p class="eyebrow">Digital Cafe</p>
+                    <h2>Einstellungen</h2>
+                </div>
+                <button class="icon-button small" value="close" aria-label="Schliessen">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="settings-grid">
+                <label>Name
+                    <input id="setting-name" type="text" autocomplete="given-name">
+                </label>
+                <label>Akzentfarbe
+                    <input id="setting-accent" type="color">
+                </label>
+                <label>Hintergrund
+                    <select id="setting-scene">
+                        <option value="auto">Automatisch</option>
+                        <option value="morning">Morgen</option>
+                        <option value="day">Tag</option>
+                        <option value="evening">Abend</option>
+                        <option value="night">Nacht</option>
+                    </select>
+                </label>
+                <label>Wettereinheit
+                    <select id="setting-units">
+                        <option value="metric">Celsius</option>
+                        <option value="imperial">Fahrenheit</option>
+                    </select>
+                </label>
+                <label>Standardstadt
+                    <input id="setting-city" type="text">
+                </label>
+                <label>Animationen
+                    <select id="setting-motion">
+                        <option value="on">Ein</option>
+                        <option value="off">Aus</option>
+                    </select>
+                </label>
+            </div>
+            <div class="modal-actions">
+                <button class="soft-button" id="reset-button" type="button">Zuruecksetzen</button>
+                <button class="primary-modal-button" value="close">Speichern</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog class="settings-modal" id="link-modal">
+        <form method="dialog" class="settings-panel compact-panel" id="link-form">
+            <div class="modal-heading">
+                <div>
+                    <p class="eyebrow">Schnellzugriff</p>
+                    <h2>Link hinzufuegen</h2>
+                </div>
+                <button class="icon-button small" value="close" aria-label="Schliessen">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <label>Titel
+                <input id="link-title" type="text" required>
+            </label>
+            <label>URL
+                <input id="link-url" type="url" required placeholder="https://">
+            </label>
+            <label>Icon
+                <input id="link-icon" type="text" placeholder="globe">
+            </label>
+            <button class="primary-modal-button" value="default">Hinzufuegen</button>
+        </form>
+    </dialog>
+
+    <div class="command-palette" id="command-palette" hidden>
+        <div class="command-box">
+            <input id="command-input" type="text" placeholder="Command oder Link suchen">
+            <div class="command-list" id="command-list"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+    <script src="{{ url_for('static', filename='digital-cafe.js') }}?v=2" defer></script>
+</body>
+</html>

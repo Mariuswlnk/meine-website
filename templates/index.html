@@ -19,6 +19,11 @@
                     Deine Flask-Seite zeigt jetzt Inhalte in einem klareren, moderneren Layout mit besserer Struktur
                     fuer mobile und grosse Bildschirme.
                 </p>
+                <div class="hero-actions">
+                    <a class="primary-link" href="{{ url_for('digital_cafe') }}">Digital Cafe oeffnen</a>
+                    <a class="secondary-link" href="{{ url_for('ai_news') }}">AI News lesen</a>
+                    <a class="secondary-link" href="#webcams">Live-Webcams ansehen</a>
+                </div>
             </div>
             <div class="hero-card">
                 <div class="stat">
@@ -32,6 +37,14 @@
                 <div class="stat">
                     <span class="stat-label">Tool</span>
                     <strong>Textanalyse</strong>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Neu</span>
+                    <strong>Digital Cafe</strong>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Neu</span>
+                    <strong>AI News</strong>
                 </div>
             </div>
         </header>
@@ -97,7 +110,7 @@
                 {% endif %}
             </section>
 
-            <section class="panel webcams-panel">
+            <section class="panel webcams-panel" id="webcams">
                 <div class="panel-heading">
                     <p class="section-kicker">Polen Live</p>
                     <h2>Webcam-Auswahl</h2>
