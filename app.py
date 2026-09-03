@@ -78,6 +78,11 @@ def digital_cafe():
     return render_template('digital_cafe.html')
 
 
+@app.route('/health')
+def health_check():
+    return jsonify({'status': 'ok'})
+
+
 @app.route('/ai-news')
 def ai_news():
     return render_template('ai_news.html')
