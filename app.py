@@ -34,6 +34,8 @@ NASA_API_KEY = 'lvRhFuI604z72sB3RfqeQh3OF7Ar4zRt1K2nv1YE'
 NASA_APOD_URL = 'https://api.nasa.gov/planetary/apod' # Endpunkt für Astronomy Picture of the Day
 OPENWEATHER_API_KEY = get_env_value('OPENWEATHER_API_KEY')
 OPENWEATHER_CURRENT_URL = 'https://api.openweathermap.org/data/2.5/weather'
+OPENMETEO_FORECAST_URL = 'https://api.open-meteo.com/v1/forecast'
+OPENMETEO_GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search'
 GOOGLE_NEWS_RSS_URL = 'https://news.google.com/rss/search'
 
 AI_NEWS_QUERIES = {
@@ -142,51 +144,151 @@ def get_ai_news():
 
 @app.route('/api/weather')
 def weather():
-    if not OPENWEATHER_API_KEY:
-        return jsonify({
-            'configured': False,
-            'message': 'OPENWEATHER_API_KEY ist nicht gesetzt.'
-        }), 200
-
     units = request.args.get('units', 'metric')
-    params = {
-        'appid': OPENWEATHER_API_KEY,
-        'units': units if units in ('metric', 'imperial') else 'metric',
-        'lang': 'de',
-    }
+    normalized_units = units if units in ('metric', 'imperial') else 'metric'
 
     lat = request.args.get('lat')
     lon = request.args.get('lon')
     city = request.args.get('city', 'Berlin')
 
-    if lat and lon:
-        params.update({'lat': lat, 'lon': lon})
-    else:
-        params['q'] = city
+    if OPENWEATHER_API_KEY:
+        params = {
+            'appid': OPENWEATHER_API_KEY,
+            'units': normalized_units,
+            'lang': 'de',
+        }
+
+        if lat and lon:
+            params.update({'lat': lat, 'lon': lon})
+        else:
+            params['q'] = city
+
+        try:
+            response = requests.get(OPENWEATHER_CURRENT_URL, params=params, timeout=8)
+            response.raise_for_status()
+            data = response.json()
+            weather_info = data.get('weather', [{}])[0]
+
+            return jsonify({
+                'configured': True,
+                'city': data.get('name', city),
+                'country': data.get('sys', {}).get('country'),
+                'temperature': data.get('main', {}).get('temp'),
+                'high': data.get('main', {}).get('temp_max'),
+                'low': data.get('main', {}).get('temp_min'),
+                'humidity': data.get('main', {}).get('humidity'),
+                'description': weather_info.get('description'),
+                'condition': weather_info.get('main'),
+                'icon': weather_info.get('icon'),
+                'provider': 'openweather',
+            })
+        except requests.exceptions.RequestException:
+            pass
 
     try:
-        response = requests.get(OPENWEATHER_CURRENT_URL, params=params, timeout=8)
-        response.raise_for_status()
-        data = response.json()
-        weather_info = data.get('weather', [{}])[0]
+        meteo_lat = lat
+        meteo_lon = lon
+        place_name = city
+        country = None
+
+        if not (meteo_lat and meteo_lon):
+            geo_response = requests.get(
+                OPENMETEO_GEOCODING_URL,
+                params={'name': city, 'count': 1, 'language': 'de', 'format': 'json'},
+                timeout=8,
+            )
+            geo_response.raise_for_status()
+            geo_data = geo_response.json()
+            result = (geo_data.get('results') or [None])[0]
+            if not result:
+                return jsonify({'configured': True, 'error': 'Ort wurde nicht gefunden.'}), 404
+
+            meteo_lat = result.get('latitude')
+            meteo_lon = result.get('longitude')
+            place_name = result.get('name') or city
+            country = result.get('country_code')
+
+        forecast_response = requests.get(
+            OPENMETEO_FORECAST_URL,
+            params={
+                'latitude': meteo_lat,
+                'longitude': meteo_lon,
+                'current': 'temperature_2m,relative_humidity_2m,weather_code',
+                'daily': 'temperature_2m_max,temperature_2m_min,weather_code',
+                'forecast_days': 1,
+                'timezone': 'auto',
+                'temperature_unit': 'fahrenheit' if normalized_units == 'imperial' else 'celsius',
+            },
+            timeout=8,
+        )
+        forecast_response.raise_for_status()
+        data = forecast_response.json()
+        current = data.get('current', {})
+        daily = data.get('daily', {})
+        condition = weather_code_to_condition(current.get('weather_code'))
 
         return jsonify({
             'configured': True,
-            'city': data.get('name', city),
-            'country': data.get('sys', {}).get('country'),
-            'temperature': data.get('main', {}).get('temp'),
-            'high': data.get('main', {}).get('temp_max'),
-            'low': data.get('main', {}).get('temp_min'),
-            'humidity': data.get('main', {}).get('humidity'),
-            'description': weather_info.get('description'),
-            'condition': weather_info.get('main'),
-            'icon': weather_info.get('icon'),
+            'city': place_name,
+            'country': country,
+            'temperature': current.get('temperature_2m'),
+            'high': first_or_none(daily.get('temperature_2m_max')),
+            'low': first_or_none(daily.get('temperature_2m_min')),
+            'humidity': current.get('relative_humidity_2m'),
+            'description': condition['description'],
+            'condition': condition['condition'],
+            'icon': condition['icon'],
+            'provider': 'openmeteo',
         })
-    except requests.exceptions.RequestException as exc:
+    except requests.exceptions.RequestException:
         return jsonify({
             'configured': True,
             'error': 'Wetter konnte gerade nicht geladen werden.',
         }), 502
+
+
+def first_or_none(values):
+    return values[0] if isinstance(values, list) and values else None
+
+
+def weather_code_to_condition(code):
+    try:
+        code = int(code)
+    except (TypeError, ValueError):
+        code = 0
+
+    weather_codes = {
+        0: ('Klar', 'Clear', '01d'),
+        1: ('Ueberwiegend klar', 'Clear', '02d'),
+        2: ('Teilweise bewoelkt', 'Clouds', '03d'),
+        3: ('Bedeckt', 'Clouds', '04d'),
+        45: ('Nebel', 'Fog', '50d'),
+        48: ('Reifnebel', 'Fog', '50d'),
+        51: ('Leichter Nieselregen', 'Drizzle', '09d'),
+        53: ('Nieselregen', 'Drizzle', '09d'),
+        55: ('Starker Nieselregen', 'Drizzle', '09d'),
+        56: ('Gefrierender Nieselregen', 'Drizzle', '09d'),
+        57: ('Starker gefrierender Nieselregen', 'Drizzle', '09d'),
+        61: ('Leichter Regen', 'Rain', '10d'),
+        63: ('Regen', 'Rain', '10d'),
+        65: ('Starker Regen', 'Rain', '10d'),
+        66: ('Gefrierender Regen', 'Rain', '10d'),
+        67: ('Starker gefrierender Regen', 'Rain', '10d'),
+        71: ('Leichter Schneefall', 'Snow', '13d'),
+        73: ('Schneefall', 'Snow', '13d'),
+        75: ('Starker Schneefall', 'Snow', '13d'),
+        77: ('Schneekoerner', 'Snow', '13d'),
+        80: ('Leichte Regenschauer', 'Rain', '09d'),
+        81: ('Regenschauer', 'Rain', '09d'),
+        82: ('Starke Regenschauer', 'Rain', '09d'),
+        85: ('Leichte Schneeschauer', 'Snow', '13d'),
+        86: ('Starke Schneeschauer', 'Snow', '13d'),
+        95: ('Gewitter', 'Thunderstorm', '11d'),
+        96: ('Gewitter mit Hagel', 'Thunderstorm', '11d'),
+        99: ('Starkes Gewitter mit Hagel', 'Thunderstorm', '11d'),
+    }
+    description, condition, icon = weather_codes.get(code, weather_codes[0])
+    return {'description': description, 'condition': condition, 'icon': icon}
 
 
 @app.route('/digital-cafe-sw.js')

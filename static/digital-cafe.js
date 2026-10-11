@@ -152,6 +152,10 @@
         return state.units === "imperial" ? "F" : "C";
     }
 
+    function formatTemperature(value, suffix) {
+        return Number.isFinite(Number(value)) ? `${Math.round(Number(value))}°${suffix}` : "--";
+    }
+
     async function loadWeather() {
         const params = new URLSearchParams({ units: state.units, city: state.city || "Berlin" });
         const fetchWeather = async (position) => {
@@ -174,10 +178,10 @@
             const suffix = unitSuffix();
             activeWeather = data.condition || "Clear";
             $("#weather-place").textContent = [data.city, data.country].filter(Boolean).join(", ");
-            $("#weather-temp").textContent = `${Math.round(data.temperature)}°${suffix}`;
+            $("#weather-temp").textContent = formatTemperature(data.temperature, suffix);
             $("#weather-description").textContent = data.description || "Klar";
-            $("#weather-range").textContent = `H ${Math.round(data.high)}° / T ${Math.round(data.low)}°`;
-            $("#weather-humidity").textContent = `${data.humidity}% Luft`;
+            $("#weather-range").textContent = `H ${formatTemperature(data.high, suffix)} / T ${formatTemperature(data.low, suffix)}`;
+            $("#weather-humidity").textContent = Number.isFinite(Number(data.humidity)) ? `${Math.round(Number(data.humidity))}% Luft` : "--% Luft";
 
             const icon = $("#weather-icon");
             if (data.icon) {
@@ -350,8 +354,8 @@
             this.ctx = null;
             this.master = null;
             this.nodes = [];
+            this.timers = [];
             this.playing = false;
-            this.birdTimer = null;
         }
 
         ensureContext() {
@@ -360,6 +364,7 @@
                 this.master = this.ctx.createGain();
                 this.master.connect(this.ctx.destination);
             }
+            if (this.ctx.state === "suspended") this.ctx.resume();
         }
 
         play(sound, volume) {
@@ -368,34 +373,182 @@
             this.playing = true;
             this.master.gain.value = volume;
 
-            const noise = this.createNoise();
-            const filter = this.ctx.createBiquadFilter();
-            const gain = this.ctx.createGain();
-            noise.connect(filter);
-            filter.connect(gain);
-            gain.connect(this.master);
-
-            const configs = {
-                rain: ["bandpass", 1400, 0.8],
-                fire: ["highpass", 500, 0.45],
-                ocean: ["lowpass", 420, 0.75],
-                forest: ["bandpass", 900, 0.34],
-                wind: ["lowpass", 300, 0.58],
-                cafe: ["bandpass", 650, 0.5],
-                birds: ["highpass", 1200, 0.16],
+            const builders = {
+                rain: () => this.buildRain(),
+                fire: () => this.buildFire(),
+                ocean: () => this.buildOcean(),
+                forest: () => this.buildForest(),
+                wind: () => this.buildWind(),
+                cafe: () => this.buildCafe(),
+                birds: () => this.buildBirds(),
             };
-            const [type, frequency, localGain] = configs[sound] || configs.rain;
-            filter.type = type;
-            filter.frequency.value = frequency;
-            gain.gain.value = localGain;
-            noise.start();
-            this.nodes.push(noise, filter, gain);
-
-            if (sound === "birds" || sound === "forest") this.startBirds();
+            (builders[sound] || builders.rain)();
         }
 
         setVolume(volume) {
             if (this.master) this.master.gain.value = volume;
+        }
+
+        buildRain() {
+            this.addNoiseLayer({ type: "highpass", frequency: 1200, gain: 0.42 });
+            this.addNoiseLayer({ type: "bandpass", frequency: 3200, q: 0.8, gain: 0.22 });
+            this.scheduleDrops(90, 0.055, 900, 2600);
+        }
+
+        buildFire() {
+            this.addNoiseLayer({ type: "bandpass", frequency: 780, q: 0.7, gain: 0.18 });
+            this.addNoiseLayer({ type: "lowpass", frequency: 180, gain: 0.22 });
+            this.scheduleCrackles();
+        }
+
+        buildOcean() {
+            const noise = this.addNoiseLayer({ type: "lowpass", frequency: 520, gain: 0.32 });
+            this.addLfo(noise.gain.gain, 0.08, 0.18, 0.32);
+            this.addNoiseLayer({ type: "bandpass", frequency: 1100, q: 0.45, gain: 0.1 });
+        }
+
+        buildForest() {
+            this.addNoiseLayer({ type: "bandpass", frequency: 880, q: 0.55, gain: 0.16 });
+            this.addNoiseLayer({ type: "lowpass", frequency: 360, gain: 0.1 });
+            this.scheduleBirds(1200, 3600, 0.07);
+            this.scheduleInsects();
+        }
+
+        buildWind() {
+            const gust = this.addNoiseLayer({ type: "bandpass", frequency: 420, q: 0.55, gain: 0.24 });
+            this.addLfo(gust.gain.gain, 0.045, 0.08, 0.28);
+            this.addNoiseLayer({ type: "lowpass", frequency: 180, gain: 0.14 });
+        }
+
+        buildCafe() {
+            this.addNoiseLayer({ type: "bandpass", frequency: 520, q: 0.7, gain: 0.16 });
+            this.addNoiseLayer({ type: "lowpass", frequency: 240, gain: 0.12 });
+            this.scheduleMurmurs();
+            this.scheduleCupClicks();
+        }
+
+        buildBirds() {
+            this.addNoiseLayer({ type: "highpass", frequency: 2400, gain: 0.035 });
+            this.scheduleBirds(700, 1900, 0.1);
+        }
+
+        addNoiseLayer({ type, frequency, q = 1, gain }) {
+            const noise = this.createNoise();
+            const filter = this.ctx.createBiquadFilter();
+            const layerGain = this.ctx.createGain();
+
+            filter.type = type;
+            filter.frequency.value = frequency;
+            filter.Q.value = q;
+            layerGain.gain.value = gain;
+
+            noise.connect(filter);
+            filter.connect(layerGain);
+            layerGain.connect(this.master);
+            noise.start();
+            this.nodes.push(noise, filter, layerGain);
+            return { source: noise, filter, gain: layerGain };
+        }
+
+        addLfo(param, rate, min, max) {
+            const osc = this.ctx.createOscillator();
+            const depth = this.ctx.createGain();
+            const offset = this.ctx.createConstantSource();
+            osc.frequency.value = rate;
+            depth.gain.value = (max - min) / 2;
+            offset.offset.value = min + (max - min) / 2;
+            osc.connect(depth);
+            depth.connect(param);
+            offset.connect(param);
+            osc.start();
+            offset.start();
+            this.nodes.push(osc, depth, offset);
+        }
+
+        playTone({ frequency, duration, gain = 0.08, type = "sine", destination = this.master, slideTo = null }) {
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const amp = this.ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(frequency, now);
+            if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, now + duration);
+            amp.gain.setValueAtTime(0.0001, now);
+            amp.gain.exponentialRampToValueAtTime(gain, now + 0.025);
+            amp.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+            osc.connect(amp);
+            amp.connect(destination);
+            osc.start(now);
+            osc.stop(now + duration + 0.02);
+            this.nodes.push(osc, amp);
+        }
+
+        scheduleDrops(interval, gain, minFreq, maxFreq) {
+            this.addTimer(() => {
+                this.playTone({
+                    frequency: minFreq + Math.random() * (maxFreq - minFreq),
+                    duration: 0.035 + Math.random() * 0.045,
+                    gain: gain * (0.4 + Math.random() * 0.8),
+                    type: "triangle",
+                    slideTo: minFreq * 0.7,
+                });
+            }, interval);
+        }
+
+        scheduleCrackles() {
+            this.addTimer(() => {
+                for (let i = 0; i < 2 + Math.floor(Math.random() * 3); i += 1) {
+                    window.setTimeout(() => {
+                        if (this.playing) this.playTone({ frequency: 1200 + Math.random() * 3200, duration: 0.035, gain: 0.07, type: "square" });
+                    }, i * 45);
+                }
+            }, 650);
+        }
+
+        scheduleBirds(minDelay, maxDelay, gain) {
+            const chirp = () => {
+                if (!this.playing) return;
+                const notes = 2 + Math.floor(Math.random() * 4);
+                for (let i = 0; i < notes; i += 1) {
+                    window.setTimeout(() => {
+                        if (!this.playing) return;
+                        const frequency = 1500 + Math.random() * 2100;
+                        this.playTone({ frequency, duration: 0.13, gain, type: "sine", slideTo: frequency * (1.08 + Math.random() * 0.25) });
+                    }, i * 95);
+                }
+                this.addTimeout(chirp, minDelay + Math.random() * (maxDelay - minDelay));
+            };
+            chirp();
+        }
+
+        scheduleInsects() {
+            this.addTimer(() => {
+                this.playTone({ frequency: 4200 + Math.random() * 800, duration: 0.16, gain: 0.025, type: "sawtooth" });
+            }, 520);
+        }
+
+        scheduleMurmurs() {
+            this.addTimer(() => {
+                const frequency = 95 + Math.random() * 120;
+                this.playTone({ frequency, duration: 0.45 + Math.random() * 0.45, gain: 0.035, type: "sawtooth" });
+            }, 420);
+        }
+
+        scheduleCupClicks() {
+            this.addTimer(() => {
+                this.playTone({ frequency: 1600 + Math.random() * 900, duration: 0.028, gain: 0.075, type: "triangle" });
+            }, 2400);
+        }
+
+        addTimer(callback, interval) {
+            const timer = window.setInterval(() => {
+                if (this.playing) callback();
+            }, interval);
+            this.timers.push(timer);
+        }
+
+        addTimeout(callback, delay) {
+            const timer = window.setTimeout(callback, delay);
+            this.timers.push(timer);
         }
 
         createNoise() {
@@ -411,28 +564,12 @@
             return source;
         }
 
-        startBirds() {
-            this.birdTimer = window.setInterval(() => {
-                if (!this.playing || !this.ctx) return;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = "sine";
-                osc.frequency.value = 1600 + Math.random() * 1200;
-                gain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.08, this.ctx.currentTime + 0.03);
-                gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.22);
-                osc.connect(gain);
-                gain.connect(this.master);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.24);
-            }, 1800 + Math.random() * 1200);
-        }
-
         stop() {
-            if (this.birdTimer) {
-                window.clearInterval(this.birdTimer);
-                this.birdTimer = null;
-            }
+            this.timers.forEach((timer) => {
+                window.clearInterval(timer);
+                window.clearTimeout(timer);
+            });
+            this.timers = [];
             this.nodes.forEach((node) => {
                 try {
                     if (node.stop) node.stop();

@@ -1,8 +1,8 @@
-const CACHE_NAME = "digital-cafe-v2";
+const CACHE_NAME = "digital-cafe-v3";
 const ASSETS = [
     "/digital-cafe",
-    "/static/digital-cafe.css?v=2",
-    "/static/digital-cafe.js?v=2",
+    "/static/digital-cafe.css?v=3",
+    "/static/digital-cafe.js?v=3",
     "/static/digital-cafe-bg.jpg",
     "/static/digital-cafe-manifest.json",
     "/digital-cafe-sw.js",
